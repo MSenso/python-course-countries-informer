@@ -1,7 +1,8 @@
 from typing import Optional
-
+from django.db.models import Q
 from news.clients.news import NewsClient
 from news.clients.shemas import NewsItemDTO
+from geo.services.country import CountryService
 from news.models import News
 
 
@@ -17,8 +18,21 @@ class NewsService:
         :param str country_code: ISO Alpha2 код страны
         :return:
         """
-
-        return NewsClient().get_news(country_code)
+        news = News.objects.filter(Q(country__alpha2code__contains=country_code))
+        if not news:  # В БД еще нет новостей по искомой стране
+            if news := NewsClient().get_news(country_code):
+                if not CountryService.is_country_code_in_codes(country_code):
+                    CountryService().get_countries(
+                        country_code
+                    )  # Обновляем данные по странам, т.к., искомая страна
+                    # может быть найдена после обновления данных
+                    if not CountryService().is_country_code_in_codes(country_code):
+                        return None
+                country_code_number = CountryService().get_countries_codes()[
+                    country_code
+                ]
+                self.save_news(country_code_number, news)
+        return news  # type: ignore
 
     def save_news(self, country_pk: int, news: list[NewsItemDTO]) -> None:
         """
