@@ -8,13 +8,12 @@ from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.request import Request
 
 from app.settings import CACHE_WEATHER, CACHE_CURRENCY
-from geo.serializers import CountrySerializer, CitySerializer
+from geo.serializers import CountrySerializer, CitySerializer, WeatherSerializer, CurrencyRatesSerializer
 from geo.services.city import CityService
 from geo.services.country import CountryService
 from geo.services.shemas import CountryCityDTO
 from geo.services.weather import WeatherService
 from geo.services.currency import CurrencyService
-
 
 @api_view(["GET"])
 def get_city(request: Request, name: str) -> JsonResponse:
@@ -129,14 +128,15 @@ def get_weather(request: Request, alpha2code: str, city: str) -> JsonResponse:
     :return:
     """
 
-    cache_key = f"{alpha2code}_{city}"
+    cache_key = f"{alpha2code.lower()}_{city.lower()}"
     data = caches[CACHE_WEATHER].get(cache_key)
     if not data:
-        if data := WeatherService().get_weather(alpha2code=alpha2code, city=city):
+        if data := WeatherService().get_weather(alpha2code=alpha2code.lower(), city=city.lower()):
             caches[CACHE_WEATHER].set(cache_key, data)
 
     if data:
-        return JsonResponse(data)
+        serializer = WeatherSerializer(data, many=False)
+        return JsonResponse(serializer.data, safe=False)
 
     raise NotFound
 
@@ -151,13 +151,14 @@ def get_currency(request: Request, base: str = "rub") -> JsonResponse:
     :return:
     """
 
-    cache_key = f"{base}"
+    cache_key = base
     data = caches[CACHE_CURRENCY].get(cache_key)
     if not data:
         if data := CurrencyService().get_currency(base=base):
             caches[CACHE_CURRENCY].set(cache_key, data)
 
     if data:
-        return JsonResponse(data)
+        serializer = CurrencyRatesSerializer(data, many=True)
+        return JsonResponse(serializer.data, safe=False)
 
     raise NotFound

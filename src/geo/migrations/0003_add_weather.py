@@ -23,13 +23,13 @@ class Migration(migrations.Migration):
                 (
                     "created_at",
                     models.DateTimeField(
-                        auto_now_add=True, verbose_name="Время создания записи"
+                        auto_now_add=True, verbose_name="Время создания"
                     ),
                 ),
                 (
                     "updated_at",
                     models.DateTimeField(
-                        auto_now=True, verbose_name="Время обновления записи"
+                        auto_now=True, verbose_name="Время изменения"
                     ),
                 ),
                 ("temp", models.FloatField(verbose_name="Температура")),
@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                 ("wind_speed", models.FloatField(verbose_name="Скорость ветра")),
                 (
                     "description",
-                    models.CharField(max_length=255, verbose_name="Описание погоды"),
+                    models.CharField(max_length=255, verbose_name="Описание"),
                 ),
                 ("visibility", models.IntegerField(verbose_name="Видимость")),
                 ("dt", models.DateTimeField(verbose_name="Время")),

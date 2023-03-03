@@ -3,6 +3,9 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
+    dependencies = [
+        ("geo", "0003_add_weather"),
+    ]
     operations = [
         migrations.CreateModel(
             name="Currency",

@@ -117,7 +117,7 @@ class Weather(TimeStampMixin):
     timezone = models.IntegerField(verbose_name="Часовой пояс")
 
     def __str__(self) -> str:
-        return f"{self.temp=} {self.pressure=}"
+        return f"{self.city=} {self.temp=} {self.pressure=} {self.dt=}"
 
     class Meta:
         verbose_name = "Погода"
@@ -128,6 +128,9 @@ class Currency(TimeStampMixin):
     """Модель валюты"""
     base = models.CharField(verbose_name="Название валюты", max_length=255)
     date = models.DateTimeField(verbose_name="Дата запроса")
+
+    def __str__(self) -> str:
+        return f"{self.base=} {self.date=}"
 
     class Meta:
         verbose_name = "Валюта"
@@ -143,3 +146,6 @@ class CurrencyRates(TimeStampMixin):
     )
     currency_name = models.CharField(verbose_name="Валюта для вычисления курса", max_length=255)
     rate = models.FloatField(verbose_name="Курс валюты")
+
+    def __str__(self) -> str:
+        return f"{self.currency=} {self.currency_name=} {self.rate=}"

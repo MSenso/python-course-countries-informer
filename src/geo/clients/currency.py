@@ -19,7 +19,7 @@ class CurrencyClient(BaseClient):
     def get_base_url(self) -> str:
         return "https://api.apilayer.com/fixer/latest"
 
-    def _request(self, endpoint: str) -> CurrencyRatesDTO | None:
+    def _request(self, endpoint: str) -> Optional[dict]:
         with httpx.Client(timeout=REQUESTS_TIMEOUT) as client:
             headers = {"apikey": API_KEY_APILAYER}
             # получение ответа
@@ -29,14 +29,21 @@ class CurrencyClient(BaseClient):
 
             return None
 
-    def get_currency(self, base: str = "rub") -> Optional[dict]:
+    def get_currency(self, base: str = "rub") -> Optional[CurrencyRatesDTO]:
         """
-        Получение данных о погоде.
+        Получение данных о валюте.
 
         :param base: Валюта, к которой нужно получить курс
         :return:
         """
 
-        return self._request(
-            f"{self.get_base_url()}?base={base}"
-        )
+        if response := self._request(
+                f"{self.get_base_url()}?base={base}"
+        ):
+            return CurrencyRatesDTO(
+                base=response["base"],
+                date=response["date"],
+                rates=response["rates"]
+            )
+        else:
+            return None
