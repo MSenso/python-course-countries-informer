@@ -19,14 +19,18 @@ class NewsService:
         :return:
         """
         news = News.objects.filter(Q(country__alpha2code__contains=country_code))
-        if not news: # В БД еще нет новостей по искомой стране
+        if not news:  # В БД еще нет новостей по искомой стране
             if news := NewsClient().get_news(country_code):
                 if not CountryService.is_country_code_in_codes(country_code):
-                    CountryService().get_countries(country_code) # Обновляем данные по странам, т.к., искомая страна
+                    CountryService().get_countries(
+                        country_code
+                    )  # Обновляем данные по странам, т.к., искомая страна
                     # может быть найдена после обновления данных
                     if not CountryService().is_country_code_in_codes(country_code):
                         return None
-                country_code_number = CountryService().get_countries_codes()[country_code]
+                country_code_number = CountryService().get_countries_codes()[
+                    country_code
+                ]
                 self.save_news(country_code_number, news)
         return news  # type: ignore
 

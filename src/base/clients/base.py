@@ -5,8 +5,8 @@
 from abc import ABC, abstractmethod
 from typing import Any, Optional
 
-import httpx
 from http import HTTPStatus
+import httpx
 from app.settings import REQUESTS_TIMEOUT
 
 

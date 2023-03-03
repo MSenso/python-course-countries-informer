@@ -1,8 +1,9 @@
 from datetime import datetime
+from typing import List
 
 from django.urls import reverse
-from geo.models import City, Country, Currency, CurrencyRates, Weather
 from rest_framework.test import APITestCase
+from geo.models import City, Country, Currency, CurrencyRates, Weather
 
 
 class Utils:
@@ -72,21 +73,22 @@ class Utils:
         Инициализация данных о валюте.
         :return:
         """
-        return Currency.objects.create(
-            base="rub", date=datetime.now().astimezone()
-        )
+        return Currency.objects.create(base="rub", date=datetime.now().astimezone())
 
     @staticmethod
-    def create_currency_rates(currency: Currency) -> [CurrencyRates]:
+    def create_currency_rates(currency: Currency) -> List[CurrencyRates]:
         """
         Инициализация данных о валютном курсе.
         :return:
         """
-        return [CurrencyRates.objects.create(
-            currency=currency, currency_name="usd", rate=70.0
-        ), CurrencyRates.objects.create(
-            currency=currency, currency_name="eur", rate=80.0
-        )]
+        return [
+            CurrencyRates.objects.create(
+                currency=currency, currency_name="usd", rate=70.0
+            ),
+            CurrencyRates.objects.create(
+                currency=currency, currency_name="eur", rate=80.0
+            ),
+        ]
 
 
 class CountryTest(APITestCase):
@@ -205,10 +207,10 @@ class CurrencyTest(APITestCase):
         Тест получения валютного курса.
         :return:
         """
-        data = self.client.get(
-            reverse("currency", kwargs={"base": "rub"})
-        ).json()
+        data = self.client.get(reverse("currency", kwargs={"base": "rub"})).json()
         self.assertEqual(len(data), 2)
         for i in range(len(data)):
-            self.assertEqual(data[i]["currency_name"], self.currency_rates[i].currency_name)
+            self.assertEqual(
+                data[i]["currency_name"], self.currency_rates[i].currency_name
+            )
             self.assertEqual(data[i]["rate"], self.currency_rates[i].rate)

@@ -126,6 +126,7 @@ class Weather(TimeStampMixin):
 
 class Currency(TimeStampMixin):
     """Модель валюты"""
+
     base = models.CharField(verbose_name="Название валюты", max_length=255)
     date = models.DateTimeField(verbose_name="Дата запроса")
 
@@ -138,13 +139,16 @@ class Currency(TimeStampMixin):
 
 class CurrencyRates(TimeStampMixin):
     """Модель курса валют"""
+
     currency = models.ForeignKey(
         Currency,
         on_delete=models.PROTECT,
         related_name="currency",
         verbose_name="Базовая валюта",
     )
-    currency_name = models.CharField(verbose_name="Валюта для вычисления курса", max_length=255)
+    currency_name = models.CharField(
+        verbose_name="Валюта для вычисления курса", max_length=255
+    )
     rate = models.FloatField(verbose_name="Курс валюты")
 
     def __str__(self) -> str:

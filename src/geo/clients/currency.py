@@ -37,13 +37,7 @@ class CurrencyClient(BaseClient):
         :return:
         """
 
-        if response := self._request(
-                f"{self.get_base_url()}?base={base}"
-        ):
+        if response := self._request(f"{self.get_base_url()}?base={base}"):
             return CurrencyRatesDTO(
-                base=response["base"],
-                date=response["date"],
-                rates=response["rates"]
+                base=response["base"], date=response["date"], rates=response["rates"]
             )
-        else:
-            return None

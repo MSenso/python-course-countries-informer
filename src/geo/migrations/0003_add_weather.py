@@ -28,9 +28,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "updated_at",
-                    models.DateTimeField(
-                        auto_now=True, verbose_name="Время изменения"
-                    ),
+                    models.DateTimeField(auto_now=True, verbose_name="Время изменения"),
                 ),
                 ("temp", models.FloatField(verbose_name="Температура")),
                 ("pressure", models.IntegerField(verbose_name="Давление")),

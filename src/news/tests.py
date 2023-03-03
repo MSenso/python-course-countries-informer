@@ -1,9 +1,10 @@
 from datetime import datetime
+from typing import List
 
 from django.urls import reverse
+from rest_framework.test import APITestCase
 from geo.models import Country
 from news.models import News
-from rest_framework.test import APITestCase
 
 
 class Utils:
@@ -36,20 +37,21 @@ class Utils:
         )
 
     @staticmethod
-    def create_news(country: Country) -> [News]:
+    def create_news(country: Country) -> List[News]:
         """
         Инициализация данных о новостях.
         :return:
         """
-        return [News.objects.create(
-            country=country,
-            source="BBC",
-            author="author1",
-            title="some news",
-            description="",
-            url="example.com",
-            published_at=datetime.now().astimezone(),
-        ),
+        return [
+            News.objects.create(
+                country=country,
+                source="BBC",
+                author="author1",
+                title="some news",
+                description="",
+                url="example.com",
+                published_at=datetime.now().astimezone(),
+            ),
             News.objects.create(
                 country=country,
                 source="Google",
@@ -58,7 +60,8 @@ class Utils:
                 description="smth there",
                 url="www.example.com",
                 published_at=datetime.now().astimezone(),
-            )]
+            ),
+        ]
 
 
 class NewsTestCase(APITestCase):

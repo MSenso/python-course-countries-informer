@@ -1,12 +1,8 @@
-import logging
-
+from django.db.models import Q
 from geo.clients.shemas import WeatherInfoDTO
 from geo.clients.weather import WeatherClient
 from geo.models import Weather
-from django.db.models import Q
 from geo.services.city import CityService
-
-logger = logging.getLogger()
 
 
 class WeatherService:
@@ -30,7 +26,9 @@ class WeatherService:
         if not weather:  # В БД еще нет данных о погоде по нужной локации
             if response := WeatherClient().get_weather(f"{city},{alpha2code}"):
                 self.save_weather(response, city)
-                weather = Weather.objects.filter(Q(city__name__contains=city.capitalize())).first()
+                weather = Weather.objects.filter(
+                    Q(city__name__contains=city.capitalize())
+                ).first()
             return weather
         else:
             return weather.first()

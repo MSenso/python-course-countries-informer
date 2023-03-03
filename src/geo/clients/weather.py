@@ -37,7 +37,7 @@ class WeatherClient(BaseClient):
         """
 
         if response := self._request(
-                f"{self.get_base_url()}?units=metric&q={location}&appid={API_KEY_OPENWEATHER}"
+            f"{self.get_base_url()}?units=metric&q={location}&appid={API_KEY_OPENWEATHER}"
         ):
             return WeatherInfoDTO(
                 temp=response["main"]["temp"],
@@ -49,5 +49,3 @@ class WeatherClient(BaseClient):
                 dt=response["dt"],
                 timezone=response["timezone"] // 3600,
             )
-        else:
-            return None
